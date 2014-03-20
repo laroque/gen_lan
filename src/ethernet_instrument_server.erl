@@ -1,4 +1,4 @@
--module(lan_sup_ser).
+-module(ethernet_instrument_server).
 
 -behaviour(gen_server).
 
