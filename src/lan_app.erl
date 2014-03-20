@@ -27,7 +27,7 @@
 %% @end
 %%--------------------------------------------------------------------
 start(_StartType, _StartArgs) ->
-    ethernet_instrument_server:start_link().
+    ethernet_instrument_server:start_link(dmm, "10.0.0.60", 5025, agilent_34460).
 
 %%--------------------------------------------------------------------
 %% @private
