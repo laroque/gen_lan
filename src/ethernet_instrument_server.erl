@@ -3,7 +3,8 @@
 -behaviour(gen_server).
 
 %% API
--export([start_link/4]).
+-export([start_link/4,
+         send_cmd/2]).
 
 %% gen_server callbacks
 -export([init/1,
@@ -32,6 +33,9 @@
 %%--------------------------------------------------------------------
 start_link(Name, Address, Port, Module) ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [Name, Address, Port, Module], []).
+
+send_cmd(Name, Cmd) ->
+    gen_server:call(Name, Cmd).
 
 %%%===================================================================
 %%% gen_server callbacks
