@@ -27,7 +27,7 @@
 %% @end
 %%--------------------------------------------------------------------
 start(_StartType, _StartArgs) ->
-    lan_sup_ser:start_link().
+    ethernet_instrument_server:start_link().
 
 %%--------------------------------------------------------------------
 %% @private
