@@ -83,8 +83,9 @@ handle_call({N, Cmd}, From, #state{name=N,
     NewSockets = lists:append(Sockets, {Socket, [], From}),
     ok = M:send_command(Cmd, Socket),
     {noreply, State#state{sockets=NewSockets}};
-handle_call(_Request, _From, State) ->
+handle_call(Request, _From, State) ->
     io:format("\nGot unexpected call\n"),
+    io:format(["Request is: ", Request]),
     {reply, call_unimplemented, State}.
 
 %%--------------------------------------------------------------------
@@ -98,7 +99,7 @@ handle_call(_Request, _From, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_cast(_Msg, State) ->
-    {stop, cast_unimplemented, State}.
+    {noreply, cast_unimplemented, State}.
 
 %%--------------------------------------------------------------------
 %% @private
