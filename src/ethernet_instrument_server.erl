@@ -79,21 +79,14 @@ handle_call({N, Cmd}, From, #state{name=N,
                                    module=M,
                                    sockets=Sockets}=State) ->
     {ok, Socket} = gen_tcp:connect(IP, Port, [binary, {packet, 0}]),
-    io:format(["\n***************************************\n"]),
-    io:format("connection made\n"),
-    io:format(["\n***************************************\n"]),
+    debug_print("connection made"),
     NewSockets = lists:append(Sockets, {Socket, [], From}),
-    io:format(["\n***************************************\n"]),
-    io:format("list appended\n"),
-    io:format(["\n***************************************\n"]),
+    debug_print("list appended"),
     ok = M:send_command(Cmd, Socket),
-    io:format(["\n***************************************\n"]),
-    io:format(["command sent"]),
-    io:format(["\n***************************************\n"]),
+    debug_print("command sent"),
     {noreply, State#state{sockets=NewSockets}};
 handle_call(Request, _From, State) ->
-    io:format("\nGot unexpected call\n"),
-    io:format(["Request is: ", Request, "\n"]),
+    debug_print(["Got unexpected call\nRequest is: ", Request]),
     {reply, call_unimplemented, State}.
 
 %%--------------------------------------------------------------------
@@ -170,3 +163,8 @@ done_check(Socket, {done, NewResponse}, #state{sockets=Socs}=State) ->
     From ! NewResponse,
     gen_tcp:close(Socket),
     State#state{sockets=lists:keydelete(Socket, 1, Socs)}.
+
+debug_print(Msg) ->
+    io:format("\n\n\n**************************************************\n"),
+    io:format(Msg),
+    io:format("\n**************************************************\n\n\n").
