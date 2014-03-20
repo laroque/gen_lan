@@ -110,7 +110,8 @@ handle_info({tcp, Socket, Data}, #state{sockets=Socs, module=M}=State) ->
         false ->
             {stop, socket_not_found, State};
         {Socket, Resp, From} ->
-            M:parse_message(Socket, {Resp, Data, From});
+            NewResp = M:parse_message(Socket, {Resp, Data, From}),
+            {noreply, done_check(Socket, NewResp, State)};
         _ ->
             {stop, malformed_state_entry, State}
     end;
@@ -145,3 +146,12 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 %%% Internal functions
 %%%===================================================================
+done_check(Socket, {continue, NewResponse}, #state{sockets=Socs}=State) ->
+    {Socket, _Resp, From} = lists:keyfind(Socket, 1, Socs),
+    S = list:keyreplace(Socket, 1, Socs, {Socket, NewResponse, From}),
+    State#state{sockets=S};
+done_check(Socket, {done, NewResponse}, #state{sockets=Socs}=State) ->
+    {Socket, _Resp, From} = lists:keyfind(Socket, 1, Socs),
+    From ! NewResponse,
+    gen_tcp:close(Socket),
+    State#state{sockets=lists:keydelete(Socket, 1, Socs)}.
