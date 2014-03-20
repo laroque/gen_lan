@@ -73,7 +73,7 @@ init([DeviceName, Address, Port, Module]) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_call({_N, Cmd}, From, #state{name=Na,
+handle_call({N, Cmd}, From, #state{name=N,
                                    ip=IP,
                                    port=Port,
                                    module=M,
@@ -81,7 +81,14 @@ handle_call({_N, Cmd}, From, #state{name=Na,
     io:format("\nGot a call\n"),
     io:format(["IP:",IP," Port:",integer_to_list(Port),"\n"]),
     io:format(["\n***************************************\n"]),
-    {ok, Socket} = gen_tcp:connect(IP, Port, [binary, {socket, 0}]),
+    %{ok, Socket} = gen_tcp:connect(IP, Port, [binary, {socket, 0}]),
+    Connection = gen_tcp:connect(IP, Port, [binary, {socket, 0}]),
+    case Connection of
+        {ok, Socket} ->
+            io:format(Socket),
+        {error, Reason} ->
+            io:format(Reason)
+    end,
     io:format("connection made\n"),
     NewSockets = lists:append(Sockets, {Socket, [], From}),
     io:format("list appended\n"),
