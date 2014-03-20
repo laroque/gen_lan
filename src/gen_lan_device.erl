@@ -18,8 +18,7 @@ behaviour_info(_) ->
 
 send(Data, Soc) ->
     ToSend = <<"*OPC?;",Data,"*OPC?;*STB?\n">>,
-    gen_tcp:send(Soc, ToSend),
-    ok.
+    gen_tcp:send(Soc, ToSend).
 
 process_response(_Message, _State) ->
     ok.

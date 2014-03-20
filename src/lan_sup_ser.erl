@@ -76,7 +76,7 @@ handle_call({N, Cmd}, From, #state{name=N,
                                    sockets=Sockets}=State) ->
     {ok, Socket} = gen_tcp:connect(IP, Port, [binary, {socket, 0}]),
     NewSockets = lists:append(Sockets, {Socket, [], From}),
-    M:send_command(Cmd, Socket),
+    ok = M:send_command(Cmd, Socket),
     {noreply, State#state{sockets=NewSockets}};
 handle_call(_Request, _From, State) ->
     Reply = unimplemented,
