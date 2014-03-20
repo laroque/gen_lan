@@ -78,11 +78,13 @@ handle_call({N, Cmd}, From, #state{name=N,
                                    port=Port,
                                    module=M,
                                    sockets=Sockets}=State) ->
+    io:format("\nGot a call\n"),
     {ok, Socket} = gen_tcp:connect(IP, Port, [binary, {socket, 0}]),
     NewSockets = lists:append(Sockets, {Socket, [], From}),
     ok = M:send_command(Cmd, Socket),
     {noreply, State#state{sockets=NewSockets}};
 handle_call(_Request, _From, State) ->
+    io:format("\nGot unexpected call\n"),
     {stop, unimplemented, State}.
 
 %%--------------------------------------------------------------------
