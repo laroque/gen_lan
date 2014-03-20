@@ -79,8 +79,7 @@ handle_call({N, Cmd}, From, #state{name=N,
     ok = M:send_command(Cmd, Socket),
     {noreply, State#state{sockets=NewSockets}};
 handle_call(_Request, _From, State) ->
-    Reply = unimplemented,
-    {reply, Reply, State}.
+    {stop, unimplemented, State}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -93,7 +92,7 @@ handle_call(_Request, _From, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_cast(_Msg, State) ->
-    {noreply, State}.
+    {stop, unimplemented, State}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -105,6 +104,16 @@ handle_cast(_Msg, State) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
+handle_info({tcp, Socket, Data}, #state{sockets=Socs, module=M}=State) ->
+    S = lists:keyfind(Socket, 1, Socs),
+    case S of
+        false ->
+            {stop, socket_not_found, State};
+        {Socket, Resp, From} ->
+            M:process_response(Resp, Data, From);
+        _ ->
+            {stop, malformed_state_entry, State}
+    end;
 handle_info(_Info, State) ->
     {noreply, State}.
 
