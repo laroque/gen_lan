@@ -73,7 +73,7 @@ init([DeviceName, Address, Port, Module]) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
-handle_call({N, Cmd}, From, #state{name=N,
+handle_call({_N, Cmd}, From, #state{name=Na,
                                    ip=IP,
                                    port=Port,
                                    module=M,
