@@ -113,8 +113,8 @@ handle_cast(_Msg, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_info({tcp, Socket, Data}, #state{sockets=Socs, module=M}=State) ->
-    sys:get_status(self()),
-    debug_print(Socs),
+    raw_print(Socket),
+    raw_print(Socs),
     S = lists:keyfind(Socket, 1, Socs),
     case S of
         false ->
@@ -169,4 +169,8 @@ done_check(Socket, {done, NewResponse}, #state{sockets=Socs}=State) ->
 debug_print(Msg) ->
     io:format("\n**************************************************\n"),
     io:format(Msg),
+    io:format("\n**************************************************\n").
+raw_print(Msg) ->
+    io:format("\n**************************************************\n"),
+    io:write(Msg),
     io:format("\n**************************************************\n").
