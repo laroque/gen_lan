@@ -37,6 +37,7 @@ process_response(_Socket, _Msg) ->
 
 get_error(Socket) ->
     ToSend = ["SYST:ERR?;*OPC?;*STB?\n"],
+    debug_print(ToSend),
     gen_tcp:send(Socket, ToSend).
 
 handle_response(Resp,R,Socket) ->
@@ -56,3 +57,8 @@ handle_response(Resp,R,Socket) ->
                 {done, NewResp}
             end
         end.
+
+debug_print(Msg) ->
+     io:format("\n\n\n**************************************************\n"),
+     io:format(Msg),
+     io:format("\n**************************************************\n\n\n").
