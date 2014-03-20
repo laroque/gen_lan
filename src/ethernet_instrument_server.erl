@@ -80,6 +80,7 @@ handle_call({N, Cmd}, From, #state{name=N,
                                    sockets=Sockets}=State) ->
     io:format("\nGot a call\n"),
     io:format(["IP:",IP," Port:",Port,"\n"]),
+    io:format(["Port is number:", is_number(Port)]),
     {ok, Socket} = gen_tcp:connect(IP, Port, [binary, {socket, 0}]),
     io:format("connection made\n"),
     NewSockets = lists:append(Sockets, {Socket, [], From}),
