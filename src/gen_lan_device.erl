@@ -20,7 +20,6 @@ behaviour_info(_) ->
 send(Data, Soc) ->
     debug_print(["trying to send:", Data]),
     ToSend = list_to_binary(["*OPC?;",Data,"*OPC?;*STB?\n"]),
-    debug_print(ToSend),
     gen_tcp:send(Soc, ToSend).
 
 process_response(Socket, {[], <<"1">>, _From}) ->
@@ -65,6 +64,6 @@ handle_response(Resp,R,Socket) ->
         end.
 
 debug_print(Msg) ->
-     io:format("\n\n\n**************************************************\n"),
+     io:format("\n**************************************************\n"),
      io:format(Msg),
-     io:format("\n**************************************************\n\n\n").
+     io:format("\n**************************************************\n").

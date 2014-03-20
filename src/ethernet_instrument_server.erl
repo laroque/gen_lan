@@ -81,7 +81,7 @@ handle_call({N, Cmd}, From, #state{name=N,
     {ok, Socket} = gen_tcp:connect(IP, Port, [binary, {packet, 0}]),
     debug_print("connection made"),
     NewSockets = lists:append(Sockets, {Socket, [], From}),
-    debug_print("list appended"),
+    debug_print("socket list appended"),
     ok = M:send_command({Cmd}, Socket),
     debug_print("command sent"),
     {noreply, State#state{sockets=NewSockets}};
@@ -113,6 +113,7 @@ handle_cast(_Msg, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_info({tcp, Socket, Data}, #state{sockets=Socs, module=M}=State) ->
+    debug_print(Socs),
     S = lists:keyfind(Socket, 1, Socs),
     case S of
         false ->
@@ -165,6 +166,6 @@ done_check(Socket, {done, NewResponse}, #state{sockets=Socs}=State) ->
     State#state{sockets=lists:keydelete(Socket, 1, Socs)}.
 
 debug_print(Msg) ->
-    io:format("\n\n\n**************************************************\n"),
+    io:format("\n**************************************************\n"),
     io:format(Msg),
-    io:format("\n**************************************************\n\n\n").
+    io:format("\n**************************************************\n").
