@@ -110,7 +110,7 @@ handle_info({tcp, Socket, Data}, #state{sockets=Socs, module=M}=State) ->
         false ->
             {stop, socket_not_found, State};
         {Socket, Resp, From} ->
-            M:process_response(Resp, Data, From);
+            M:parse_message(Socket, {Resp, Data, From});
         _ ->
             {stop, malformed_state_entry, State}
     end;
