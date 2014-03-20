@@ -85,7 +85,7 @@ handle_call({N, Cmd}, From, #state{name=N,
     {noreply, State#state{sockets=NewSockets}};
 handle_call(_Request, _From, State) ->
     io:format("\nGot unexpected call\n"),
-    {stop, unimplemented, State}.
+    {stop, call_unimplemented, State}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -98,7 +98,7 @@ handle_call(_Request, _From, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_cast(_Msg, State) ->
-    {stop, unimplemented, State}.
+    {stop, cast_unimplemented, State}.
 
 %%--------------------------------------------------------------------
 %% @private

@@ -28,7 +28,6 @@
 %%--------------------------------------------------------------------
 start(_StartType, _StartArgs) ->
     lan_sup:start_link().
-    %ethernet_instrument_server:start_link(dmm, "10.0.0.60", 5025, agilent_34460).
 
 %%--------------------------------------------------------------------
 %% @private
