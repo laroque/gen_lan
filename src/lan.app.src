@@ -1,0 +1,12 @@
+{application, lan,
+  [
+    {description, ""},
+    {vsn, "0"},
+    {registered, []},
+    {applications, [
+                    kernel,
+                    stdlib
+                   ]},
+    {mod, {lan_app, []}},
+    {env, []}
+  ]}.

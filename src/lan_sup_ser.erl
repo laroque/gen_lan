@@ -13,7 +13,11 @@
          terminate/2,
          code_change/3]).
 
--record(state, {}).
+-record(state, {name,
+                ip,
+                port,
+                module,
+                sockets}).
 
 %%%===================================================================
 %%% API
@@ -44,8 +48,12 @@ start_link() ->
 %%                     {stop, Reason}
 %% @end
 %%--------------------------------------------------------------------
-init([]) ->
-    {ok, #state{}}.
+init([DeviceName, Address, Port, Module]) ->
+    {ok, #state{name=DeviceName,
+                ip=Address,
+                port=Port,
+                module=Module,
+                sockets=[]}}.
 
 %%--------------------------------------------------------------------
 %% @private
@@ -61,8 +69,17 @@ init([]) ->
 %%                                   {stop, Reason, State}
 %% @end
 %%--------------------------------------------------------------------
+handle_call({N, Cmd}, From, #state{name=N,
+                                   ip=IP,
+                                   port=Port,
+                                   module=M,
+                                   sockets=Sockets}=State) ->
+    {ok, Socket} = gen_tcp:connect(IP, Port, [binary, {socket, 0}]),
+    NewSockets = lists:append(Sockets, {Socket, [], From}),
+    M:send_command(Cmd, Socket),
+    {noreply, State#state{sockets=NewSockets}};
 handle_call(_Request, _From, State) ->
-    Reply = ok,
+    Reply = unimplemented,
     {reply, Reply, State}.
 
 %%--------------------------------------------------------------------
