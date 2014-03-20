@@ -26,7 +26,7 @@ start_link() ->
 init([]) ->
     io:format("initting\r\n"),
     Dmm = {ethernet_instrument_server,
-           {ethernet_instrument_server, start_link, [dmm, "10.0.0.60", 5025]},
+           {ethernet_instrument_server, start_link, [dmm, "10.0.0.60", 5025, agilent_34460]},
            permanent, 5000, worker, [ethernet_instrument_server]},
     {ok, { {one_for_one, 5, 10}, [Dmm]} }.
 
