@@ -82,12 +82,13 @@ handle_call({N, Cmd}, From, #state{name=N,
     io:format(["IP:",IP," Port:",integer_to_list(Port),"\n"]),
     io:format(["\n***************************************\n"]),
     %{ok, Socket} = gen_tcp:connect(IP, Port, [binary, {socket, 0}]),
-    Connection = gen_tcp:connect(IP, Port, [binary, {socket, 0}]),
-    case Connection of
-        {ok, Socket} ->
-            io:format(Socket),
-        {error, Reason} ->
-            io:format(Reason)
+    {Con, Socket} = gen_tcp:connect(IP, Port, [binary, {socket, 0}]),
+    case Con of
+        ok ->
+            io:format(Socket);
+        error ->
+            io:format("got an error:\n"),
+            io:format(Socket)
     end,
     io:format("connection made\n"),
     NewSockets = lists:append(Sockets, {Socket, [], From}),
