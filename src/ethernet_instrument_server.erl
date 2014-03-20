@@ -113,6 +113,7 @@ handle_cast(_Msg, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_info({tcp, Socket, Data}, #state{sockets=Socs, module=M}=State) ->
+    sys:get_status(self()),
     debug_print(Socs),
     S = lists:keyfind(Socket, 1, Socs),
     case S of
