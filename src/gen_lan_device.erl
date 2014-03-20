@@ -18,6 +18,7 @@ behaviour_info(_) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 send(Data, Soc) ->
+    debug_print(["trying to send:", Data]),
     ToSend = <<"*OPC?;",Data,"*OPC?;*STB?\n">>,
     debug_print(ToSend),
     gen_tcp:send(Soc, ToSend).
