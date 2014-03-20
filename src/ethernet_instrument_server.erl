@@ -82,7 +82,7 @@ handle_call({N, Cmd}, From, #state{name=N,
     debug_print("connection made"),
     NewSockets = lists:append(Sockets, {Socket, [], From}),
     debug_print("list appended"),
-    ok = M:send_command(Cmd, Socket),
+    ok = M:send_command({Cmd}, Socket),
     debug_print("command sent"),
     {noreply, State#state{sockets=NewSockets}};
 handle_call(Request, _From, State) ->
