@@ -155,7 +155,7 @@ code_change(_OldVsn, State, _Extra) ->
 %%%===================================================================
 done_check(Socket, {continue, NewResponse}, #state{sockets=Socs}=State) ->
     {Socket, _Resp, From} = lists:keyfind(Socket, 1, Socs),
-    S = list:keyreplace(Socket, 1, Socs, {Socket, NewResponse, From}),
+    S = lists:keyreplace(Socket, 1, Socs, {Socket, NewResponse, From}),
     State#state{sockets=S};
 done_check(Socket, {done, NewResponse}, #state{sockets=Socs}=State) ->
     {Socket, _Resp, From} = lists:keyfind(Socket, 1, Socs),
