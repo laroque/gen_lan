@@ -18,7 +18,12 @@ send_command({trig_count}, Socket) ->
     gen_lan_device:send("TRIG:COUN?", Socket);
 send_command({trig_count, Value}, Socket) ->
     V = gen_lan_device:arg_to_binary(Value),
-    gen_lan_device:send(["TRIG:COUN ",V], Socket).
+    gen_lan_device:send(["TRIG:COUN ",V], Socket);
+send_command({trig_sour}, Socket) ->
+    gen_lan_device:send("TRIG:SOUR?", Socket);
+send_command({trig_sour, Value}, Socket) ->
+    V = gen_lan_device:arg_to_binary(Value),
+    gen_lan_device:send(["TRIG:SOUR ",V], Socket).
 
 parse_message(Socket, Msg) ->
     gen_lan_device:process_response(Socket, Msg).
