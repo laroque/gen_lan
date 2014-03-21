@@ -19,7 +19,7 @@ behaviour_info(_) ->
 
 send(Data, Soc) ->
     debug_print(["trying to send:", Data]),
-    ToSend = list_to_binary(["*OPC?;",Data,"*OPC?;*STB?\n"]),
+    ToSend = list_to_binary(["*OPC?;",Data,";*OPC?;*STB?\n"]),
     gen_tcp:send(Soc, ToSend).
 
 process_response(Socket, {[], <<"1">>, _From}) ->
