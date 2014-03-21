@@ -53,7 +53,7 @@ handle_response(Resp,R,Socket) ->
             {continue, NewResp};
         {Pos, 5} -> % complete, no errors
             if Pos =:= 0 ->
-                {done, Resp};
+                {done, <<"">>};
             true ->
                 NewResp = list_to_binary([R,binary:part(Resp, {0, Pos-1})]),
                 {done, NewResp}
