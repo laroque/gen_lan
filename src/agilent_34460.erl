@@ -11,7 +11,7 @@
 % Required callbacks
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 send_command({read}, Socket) ->
-    gen_lan_device:sned("READ?", Socket);
+    gen_lan_device:send("READ?", Socket);
 send_command({status}, Socket) ->
     gen_lan_device:send("*STB?", Socket);
 send_command({trig_count}, Socket) ->
