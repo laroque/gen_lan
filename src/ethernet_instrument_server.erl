@@ -163,7 +163,7 @@ done_check(Socket, {error, NewResponse}, #state{sockets=Socs}=State) ->
     State#state{sockets=S};
 done_check(Socket, {done, NewResponse}, #state{sockets=Socs}=State) ->
     {Socket, _Resp, From, Status} = lists:keyfind(Socket, 1, Socs),
-    gen_server:reply(From, {ok, {Status, NewResponse}}),
+    gen_server:reply(From, {Status, NewResponse}),
     gen_tcp:close(Socket),
     State#state{sockets=lists:keydelete(Socket, 1, Socs)}.
 
