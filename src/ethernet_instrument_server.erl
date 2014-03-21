@@ -81,13 +81,8 @@ handle_call({N, Cmd}, From, #state{name=N,
                                    module=M,
                                    sockets=Sockets}=State) ->
     {ok, Socket} = gen_tcp:connect(IP, Port, [binary, {packet, 0}]),
-    debug_print("connection made"),
     NewSockets = lists:append(Sockets, [{Socket, [], From}]),
-    %debug_print("socket list appended"),
-    %raw_print(NewSockets),
-    %raw_print(Cmd),
     ok = M:send_command(Cmd, Socket),
-    %debug_print("command sent"),
     {noreply, State#state{sockets=NewSockets}};
 handle_call(Request, _From, State) ->
     debug_print(["Got unexpected call\nRequest is: ", Request]),

@@ -2,7 +2,8 @@
 
 -export([behaviour_info/1,
          send/2,
-         process_response/2
+         process_response/2,
+         arg_to_binary/1
        ]).
 
 behaviour_info(callbacks) ->
@@ -18,7 +19,6 @@ behaviour_info(_) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 send(Data, Soc) ->
-    %debug_print(["trying to send:", Data]),
     ToSend = list_to_binary(["*OPC?;",Data,";*OPC?;*STB?\n"]),
     gen_tcp:send(Soc, ToSend).
 
@@ -27,10 +27,8 @@ process_response(Socket, {[], <<"1">>, _From}) ->
     ok = get_error(Socket),
     {continue, []};
 process_response(Socket, {[]=OldData, <<"1;",Rest/binary>>, _From}) ->
-    %debug_print("got first data"),
     handle_response(Rest, OldData, Socket);
 process_response(Socket, {OldData, Resp, _From}) ->
-    %debug_print("got additional data"),
     handle_response(Resp, OldData, Socket);
 process_response(_Socket, _Msg) ->
     debug_print("got confusing data"),
@@ -61,6 +59,15 @@ handle_response(Resp,R,Socket) ->
                 {done, NewResp}
             end
         end.
+
+arg_to_binary(Arg) ->
+    if  is_integer(Arg) ->
+            erlang:integer_to_binary(Arg);
+        is_float(Arg) ->
+            erlang:float_to_binary(Arg);
+        true ->
+            Arg
+    end.
 
 debug_print(Msg) ->
      io:format("\n**************************************************\n"),
