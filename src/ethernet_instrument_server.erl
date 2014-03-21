@@ -81,7 +81,7 @@ handle_call({N, Cmd}, From, #state{name=N,
                                    module=M,
                                    sockets=Sockets}=State) ->
     {ok, Socket} = gen_tcp:connect(IP, Port, [binary, {packet, 0}]),
-    NewSockets = lists:append(Sockets, [{Socket, [], From}]),
+    NewSockets = lists:append(Sockets, [{Socket, [], From, ok}]),
     ok = M:send_command(Cmd, Socket),
     {noreply, State#state{sockets=NewSockets}};
 handle_call(Request, _From, State) ->
@@ -116,7 +116,7 @@ handle_info({tcp, Socket, Data}, #state{sockets=Socs, module=M}=State) ->
     case S of
         false ->
             {stop, socket_not_found, State};
-        {Socket, Resp, From} ->
+        {Socket, Resp, From, _Status} ->
             NewResp = M:parse_message(Socket, {Resp, Data, From}),
             {noreply, done_check(Socket, NewResp, State)};
         _ ->
@@ -154,12 +154,16 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal functions
 %%%===================================================================
 done_check(Socket, {continue, NewResponse}, #state{sockets=Socs}=State) ->
-    {Socket, _Resp, From} = lists:keyfind(Socket, 1, Socs),
-    S = lists:keyreplace(Socket, 1, Socs, {Socket, NewResponse, From}),
+    {Socket, _Resp, From, Status} = lists:keyfind(Socket, 1, Socs),
+    S = lists:keyreplace(Socket, 1, Socs, {Socket, NewResponse, From, Status}),
+    State#state{sockets=S};
+done_check(Socket, {error, NewResponse}, #state{sockets=Socs}=State) ->
+    {Socket, _Resp, From, _Status} = lists:keyfind(Socket, 1, Socs),
+    S = lists:keyreplace(Socket, 1, Socs, {Socket, NewResponse, From, error}),
     State#state{sockets=S};
 done_check(Socket, {done, NewResponse}, #state{sockets=Socs}=State) ->
-    {Socket, _Resp, From} = lists:keyfind(Socket, 1, Socs),
-    gen_server:reply(From, NewResponse),
+    {Socket, _Resp, From, Status} = lists:keyfind(Socket, 1, Socs),
+    gen_server:reply(From, {ok, {Status, NewResponse}}),
     gen_tcp:close(Socket),
     State#state{sockets=lists:keydelete(Socket, 1, Socs)}.
 

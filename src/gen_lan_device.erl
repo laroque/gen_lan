@@ -23,7 +23,6 @@ send(Data, Soc) ->
     gen_tcp:send(Soc, ToSend).
 
 process_response(Socket, {[], <<"1">>, _From}) ->
-    debug_print("got bad command"),
     ok = get_error(Socket),
     {continue, []};
 process_response(Socket, {[]=OldData, <<"1;",Rest/binary>>, _From}) ->
