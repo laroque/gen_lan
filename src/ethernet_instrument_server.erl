@@ -37,8 +37,6 @@ start_link(Name, Address, Port, Module) ->
 send_cmd(Name, {Cmd, Value}) ->
     gen_server:call(Name, {Cmd, Value}, infinity);
 send_cmd(Name, {Cmd}) ->
-    gen_server:call(Name, {Cmd}, infinity);
-send_cmd(Name, Cmd) ->
     gen_server:call(Name, {Cmd}, infinity).
 
 %%%===================================================================
