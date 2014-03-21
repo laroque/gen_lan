@@ -32,7 +32,7 @@
 %% @end
 %%--------------------------------------------------------------------
 start_link(Name, Address, Port, Module) ->
-    gen_server:start_link({local, ?MODULE}, ?MODULE, [Name, Address, Port, Module], []).
+    gen_server:start_link({local, Name}, ?MODULE, [Name, Address, Port, Module], []).
 
 send_cmd(Name, {Cmd, Value}) ->
     gen_server:call(Name, {Cmd, Value}, infinity);
