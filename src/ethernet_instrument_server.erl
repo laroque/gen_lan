@@ -35,7 +35,7 @@ start_link(Name, Address, Port, Module) ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [Name, Address, Port, Module], []).
 
 send_cmd(Name, Cmd) ->
-    gen_server:call(Name, Cmd).
+    gen_server:call(Name, Cmd, 60000).
 
 %%%===================================================================
 %%% gen_server callbacks
