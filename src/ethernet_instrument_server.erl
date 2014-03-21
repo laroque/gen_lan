@@ -80,7 +80,7 @@ handle_call({N, Cmd}, From, #state{name=N,
                                    sockets=Sockets}=State) ->
     {ok, Socket} = gen_tcp:connect(IP, Port, [binary, {packet, 0}]),
     debug_print("connection made"),
-    NewSockets = lists:append(Sockets, {Socket, [], From}),
+    NewSockets = lists:append(Sockets, [{Socket, [], From}]),
     debug_print("socket list appended"),
     raw_print(NewSockets),
     ok = M:send_command({Cmd}, Socket),
