@@ -18,7 +18,7 @@ behaviour_info(_) ->
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 send(Data, Soc) ->
-    debug_print(["trying to send:", Data]),
+    %debug_print(["trying to send:", Data]),
     ToSend = list_to_binary(["*OPC?;",Data,";*OPC?;*STB?\n"]),
     gen_tcp:send(Soc, ToSend).
 
@@ -27,10 +27,10 @@ process_response(Socket, {[], <<"1">>, _From}) ->
     ok = get_error(Socket),
     {continue, []};
 process_response(Socket, {[]=OldData, <<"1;",Rest/binary>>, _From}) ->
-    debug_print("got first data"),
+    %debug_print("got first data"),
     handle_response(Rest, OldData, Socket);
 process_response(Socket, {OldData, Resp, _From}) ->
-    debug_print("got additional data"),
+    %debug_print("got additional data"),
     handle_response(Resp, OldData, Socket);
 process_response(_Socket, _Msg) ->
     debug_print("got confusing data"),
@@ -42,7 +42,6 @@ process_response(_Socket, _Msg) ->
 
 get_error(Socket) ->
     ToSend = ["SYST:ERR?;*OPC?;*STB?\n"],
-    debug_print(ToSend),
     gen_tcp:send(Socket, ToSend).
 
 handle_response(Resp,R,Socket) ->

@@ -117,8 +117,6 @@ handle_cast(_Msg, State) ->
 %% @end
 %%--------------------------------------------------------------------
 handle_info({tcp, Socket, Data}, #state{sockets=Socs, module=M}=State) ->
-    raw_print(Socket),
-    raw_print(Socs),
     S = lists:keyfind(Socket, 1, Socs),
     case S of
         false ->
@@ -166,8 +164,6 @@ done_check(Socket, {continue, NewResponse}, #state{sockets=Socs}=State) ->
     State#state{sockets=S};
 done_check(Socket, {done, NewResponse}, #state{sockets=Socs}=State) ->
     {Socket, _Resp, From} = lists:keyfind(Socket, 1, Socs),
-    raw_print(From),
-    raw_print(NewResponse),
     gen_server:reply(From, NewResponse),
     gen_tcp:close(Socket),
     State#state{sockets=lists:keydelete(Socket, 1, Socs)}.
