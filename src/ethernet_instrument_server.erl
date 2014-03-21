@@ -165,7 +165,7 @@ done_check(Socket, {done, NewResponse}, #state{sockets=Socs}=State) ->
     {Socket, _Resp, From} = lists:keyfind(Socket, 1, Socs),
     raw_print(From),
     raw_print(NewResponse),
-    From ! NewResponse,
+    gen_server:reply(From, NewResponse),
     gen_tcp:close(Socket),
     State#state{sockets=lists:keydelete(Socket, 1, Socs)}.
 
