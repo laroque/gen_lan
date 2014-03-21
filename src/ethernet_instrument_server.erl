@@ -34,8 +34,12 @@
 start_link(Name, Address, Port, Module) ->
     gen_server:start_link({local, ?MODULE}, ?MODULE, [Name, Address, Port, Module], []).
 
+send_cmd(Name, {Cmd, Value}) ->
+    gen_server:call(Name, {Cmd, Value}, infinity);
+send_cmd(Name, {Cmd}) ->
+    gen_server:call(Name, {Cmd}, infinity);
 send_cmd(Name, Cmd) ->
-    gen_server:call(Name, Cmd, 60000).
+    gen_server:call(Name, {Cmd}, infinity).
 
 %%%===================================================================
 %%% gen_server callbacks
@@ -81,10 +85,11 @@ handle_call({N, Cmd}, From, #state{name=N,
     {ok, Socket} = gen_tcp:connect(IP, Port, [binary, {packet, 0}]),
     debug_print("connection made"),
     NewSockets = lists:append(Sockets, [{Socket, [], From}]),
-    debug_print("socket list appended"),
-    raw_print(NewSockets),
+    %debug_print("socket list appended"),
+    %raw_print(NewSockets),
+    raw_print(Cmd),
     ok = M:send_command(Cmd, Socket),
-    debug_print("command sent"),
+    %debug_print("command sent"),
     {noreply, State#state{sockets=NewSockets}};
 handle_call(Request, _From, State) ->
     debug_print(["Got unexpected call\nRequest is: ", Request]),
